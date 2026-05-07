@@ -91,17 +91,9 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="py-8 px-4 border-t border-t-lightblue">
-        <p className="text-center text-white">
-          @2025 - All Rights Reserved by{" "}
-          <Link
-            href="https://getnextjstemplates.com/"
-            target="_blank"
-            className="hover:text-primary">
-            
-            {" "}
-            GetNextJs Templates.com
-          </Link>
+      <div className="py-8 px-4 border-t border-white/10">
+        <p className="text-center text-white/50 text-sm">
+          &copy; {new Date().getFullYear()} KRYPTOBUX. All rights reserved.
         </p>
       </div>
     </footer>);

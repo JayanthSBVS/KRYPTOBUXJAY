@@ -1,12 +1,10 @@
 import { create } from 'zustand';
 
 export const useAuthModalStore = create((set) => ({
-  modalState: 'CLOSED', // 'LOGIN' | 'REGISTER' | 'CLOSED'
-  prefilledEmail: '',
-  openLogin: () => set({ modalState: 'LOGIN', prefilledEmail: '' }),
-  openRegister: (email = '') => set({ modalState: 'REGISTER', prefilledEmail: email }),
-  closeModal: () => set({ modalState: 'CLOSED', prefilledEmail: '' }),
-  toggleModal: () => set((state) => ({
-    modalState: state.modalState === 'LOGIN' ? 'REGISTER' : 'LOGIN'
-  }))
+  isOpen: false,
+  type: 'LOGIN', // 'LOGIN' | 'REGISTER'
+  defaultEmail: '',
+  openModal: (type = 'LOGIN', defaultEmail = '') => set({ isOpen: true, type, defaultEmail }),
+  closeModal: () => set({ isOpen: false, defaultEmail: '' }),
+  setType: (type) => set({ type }),
 }));
