@@ -125,7 +125,7 @@ export default function AuthModal() {
                         {...register('username', { required: !isLogin, minLength: { value: 3, message: 'Min 3 characters' } })}
                         placeholder="Choose a username"
                         className="w-full pl-11 pr-4 py-3.5 rounded-xl text-white text-sm placeholder-lightblue/50 outline-none transition-all"
-                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem' }}
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
                         onFocus={(e) => e.target.style.borderColor = 'rgba(189,36,223,0.5)'}
                         onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
                       />
@@ -135,19 +135,24 @@ export default function AuthModal() {
                 )}
 
                 <div>
-                  <label className="block text-xs font-bold text-lightblue mb-2 tracking-wide uppercase">Email Address</label>
+                  <label className="block text-xs font-bold text-lightblue mb-2 tracking-wide uppercase">
+                    FaucetPay Email Address
+                  </label>
                   <div className="relative">
                     <Icon icon="ion:mail-outline" className="absolute left-4 top-1/2 -translate-y-1/2 text-lightblue" />
                     <input
                       type="email"
                       {...register('email', { required: 'Email is required', pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' } })}
-                      placeholder="you@example.com"
+                      placeholder="Use your FaucetPay account email to continue"
                       className="w-full pl-11 pr-4 py-3.5 rounded-xl text-white text-sm placeholder-lightblue/50 outline-none transition-all"
                       style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
                       onFocus={(e) => e.target.style.borderColor = 'rgba(189,36,223,0.5)'}
                       onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
                     />
                   </div>
+                  <p className="text-[10px] text-lightblue/70 mt-1.5 ml-1 leading-tight">
+                    Required for instantaneous crypto withdrawals and reward tracking.
+                  </p>
                   {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
                 </div>
 
@@ -183,7 +188,7 @@ export default function AuthModal() {
                   disabled={isSubmitting}
                   whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(189,36,223,0.5)' }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full py-4 rounded-2xl font-black text-white text-sm mt-2 disabled:opacity-60 transition-all"
+                  className="w-full py-4 rounded-2xl font-black text-white text-sm mt-4 disabled:opacity-60 transition-all"
                   style={{ background: 'linear-gradient(135deg, #bd24df, #2d6ade)', boxShadow: '0 0 25px rgba(189,36,223,0.35)' }}
                 >
                   {isSubmitting ? (
@@ -192,33 +197,7 @@ export default function AuthModal() {
                         className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full inline-block" />
                       Processing...
                     </span>
-                  ) : isLogin ? 'Sign In to Dashboard →' : 'Create Free Account →'}
-                </motion.button>
-
-                {/* Divider */}
-                <div className="relative my-2">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }} />
-                  </div>
-                  <div className="relative flex justify-center">
-                    <span className="px-3 text-xs text-lightblue/60 font-medium" style={{ background: '#0c1b44' }}>or continue with</span>
-                  </div>
-                </div>
-
-                {/* FaucetPay SSO */}
-                <motion.button
-                  type="button"
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full py-3.5 rounded-2xl font-bold text-white text-sm flex items-center justify-center gap-3 transition-all"
-                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
-                  onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(45,106,222,0.5)'}
-                  onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}
-                >
-                  <div className="w-7 h-7 rounded-lg flex items-center justify-center font-black text-[11px] text-white" style={{ background: 'linear-gradient(135deg, #2d6ade, #1a4aad)' }}>
-                    FP
-                  </div>
-                  Continue with FaucetPay
+                  ) : isLogin ? 'Sign In to Dashboard →' : 'Create Account →'}
                 </motion.button>
               </form>
 
