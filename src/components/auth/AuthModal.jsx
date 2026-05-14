@@ -1,159 +1,240 @@
-import React, { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useForm } from 'react-hook-form';
 import { useAuthModalStore } from '@/store/useAuthModalStore';
 import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import { Icon } from '@iconify/react';
 
-const AuthModal = () => {
+export default function AuthModal() {
   const { isOpen, type, defaultEmail, closeModal, setType } = useAuthModalStore();
   const { login } = useAuth();
   const navigate = useNavigate();
+  const [showPass, setShowPass] = useState(false);
+  const [serverError, setServerError] = useState('');
 
-  const { register, handleSubmit, reset, setValue, formState: { errors, isSubmitting } } = useForm();
+  const { register, handleSubmit, reset, setValue, watch, formState: { errors, isSubmitting } } = useForm();
+  const isLogin = type === 'LOGIN';
 
   useEffect(() => {
-    if (isOpen && defaultEmail && type === 'REGISTER') {
-      setValue('email', defaultEmail);
-    }
+    if (isOpen && defaultEmail && type === 'REGISTER') setValue('email', defaultEmail);
   }, [isOpen, defaultEmail, type, setValue]);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (!isOpen) { reset(); setServerError(''); setShowPass(false); }
+  }, [isOpen, reset]);
+
+  // Prevent body scroll when open
+  useEffect(() => {
+    if (isOpen) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
 
   const onSubmit = async (data) => {
+    setServerError('');
     try {
-      // Simulate API call for login/register
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      // Mock successful response
-      const mockToken = "mock_jwt_token_xyz";
-      const mockUser = { id: '1', email: data.email, name: 'User' };
-      
+      await new Promise((r) => setTimeout(r, 900));
+      const mockToken = 'kryptobux_token_' + Date.now();
+      const mockUser = { id: '1', email: data.email, username: data.username || 'Earner', balance: 0 };
       login(mockToken, mockUser);
       closeModal();
-      reset();
       navigate('/dashboard');
-    } catch (error) {
-      console.error('Authentication failed', error);
+    } catch {
+      setServerError('Authentication failed. Please try again.');
     }
   };
 
-  const isLogin = type === 'LOGIN';
-
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/70 backdrop-blur-md px-4">
-      <div className="relative w-full max-w-md bg-body-bg border border-border rounded-2xl shadow-2xl overflow-hidden p-8">
-        
-        {/* Close Button */}
-        <button 
-          onClick={() => { closeModal(); reset(); }}
-          className="absolute top-4 right-4 text-gray-400 hover:text-white transition"
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          onClick={(e) => e.target === e.currentTarget && closeModal()}
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4"
+          style={{ background: 'rgba(4, 13, 38, 0.85)', backdropFilter: 'blur(16px)' }}
         >
-          <Icon icon="ion:close" className="text-2xl" />
-        </button>
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0, y: 24 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.95, opacity: 0, y: 16 }}
+            transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+            className="relative w-full max-w-md overflow-hidden"
+            style={{
+              background: 'linear-gradient(145deg, #0c1b44 0%, #040D26 100%)',
+              border: '1px solid rgba(189,36,223,0.2)',
+              borderRadius: '1.75rem',
+              boxShadow: '0 0 80px rgba(189,36,223,0.15), 0 40px 80px rgba(0,0,0,0.6)',
+            }}
+          >
+            {/* Top glow bar */}
+            <div className="absolute top-0 left-0 right-0 h-px" style={{ background: 'linear-gradient(90deg, transparent, rgba(189,36,223,0.7), rgba(45,106,222,0.5), transparent)' }} />
 
-        <div className="text-center mb-8">
-          <h2 className="text-3xl font-bold text-white mb-2">
-            {isLogin ? 'Welcome Back' : 'Create Account'}
-          </h2>
-          <p className="text-gray-400 text-sm">
-            {isLogin ? 'Log in to access your dashboard' : 'Join thousands earning crypto today'}
-          </p>
-        </div>
+            {/* Ambient bg glow */}
+            <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(189,36,223,0.12) 0%, transparent 65%)' }} />
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          {!isLogin && (
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">Username</label>
-              <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                  <Icon icon="ion:person-outline" />
-                </span>
-                <input 
-                  type="text"
-                  {...register('username', { required: !isLogin })}
-                  className="w-full bg-darkmode border border-border rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-primary transition"
-                  placeholder="Enter your username"
-                />
+            <div className="relative p-8">
+              {/* Close */}
+              <button onClick={closeModal} className="absolute top-5 right-5 w-8 h-8 rounded-xl flex items-center justify-center text-lightblue hover:text-white hover:bg-white/10 transition-all">
+                <Icon icon="ion:close" className="text-lg" />
+              </button>
+
+              {/* Logo mark */}
+              <div className="flex justify-center mb-6">
+                <div className="w-14 h-14 rounded-2xl flex items-center justify-center" style={{ background: 'linear-gradient(135deg, #bd24df, #2d6ade)', boxShadow: '0 0 30px rgba(189,36,223,0.4)' }}>
+                  <Icon icon="ion:diamond" className="text-white text-2xl" />
+                </div>
               </div>
-            </div>
-          )}
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Email Address</label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <Icon icon="ion:mail-outline" />
-              </span>
-              <input 
-                type="email"
-                {...register('email', { required: true })}
-                className="w-full bg-darkmode border border-border rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-primary transition"
-                placeholder="Enter your email"
-              />
-            </div>
-            {errors.email && <span className="text-red-500 text-xs mt-1">Email is required</span>}
-          </div>
+              {/* Toggle tabs */}
+              <div className="flex rounded-2xl p-1 mb-8" style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                {['LOGIN', 'REGISTER'].map((t) => (
+                  <button key={t} onClick={() => { reset(); setType(t); }}
+                    className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all duration-300"
+                    style={type === t ? {
+                      background: 'linear-gradient(135deg, #bd24df, #2d6ade)',
+                      color: 'white',
+                      boxShadow: '0 0 20px rgba(189,36,223,0.3)',
+                    } : { color: '#8a9bca' }}
+                  >
+                    {t === 'LOGIN' ? 'Sign In' : 'Create Account'}
+                  </button>
+                ))}
+              </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">Password</label>
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <Icon icon="ion:lock-closed-outline" />
-              </span>
-              <input 
-                type="password"
-                {...register('password', { required: true, minLength: 6 })}
-                className="w-full bg-darkmode border border-border rounded-lg py-3 pl-10 pr-4 text-white focus:outline-none focus:border-primary transition"
-                placeholder="Enter your password"
-              />
-            </div>
-            {errors.password && <span className="text-red-500 text-xs mt-1">Password must be at least 6 characters</span>}
-          </div>
+              <div className="text-center mb-8">
+                <h2 className="text-2xl font-black text-white mb-1">
+                  {isLogin ? 'Welcome Back' : 'Start Earning Crypto'}
+                </h2>
+                <p className="text-sm text-lightblue">
+                  {isLogin ? 'Access your crypto dashboard' : 'Join 45,000+ earners. Free forever.'}
+                </p>
+              </div>
 
-          <button 
-            type="submit" 
-            disabled={isSubmitting}
-            className="w-full bg-primary hover:bg-opacity-90 text-white font-bold py-3 rounded-lg transition mt-4 disabled:opacity-50"
-          >
-            {isSubmitting ? 'Processing...' : (isLogin ? 'Sign In' : 'Sign Up')}
-          </button>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                {!isLogin && (
+                  <div>
+                    <label className="block text-xs font-bold text-lightblue mb-2 tracking-wide uppercase">Username</label>
+                    <div className="relative">
+                      <Icon icon="ion:person-outline" className="absolute left-4 top-1/2 -translate-y-1/2 text-lightblue" />
+                      <input
+                        type="text"
+                        {...register('username', { required: !isLogin, minLength: { value: 3, message: 'Min 3 characters' } })}
+                        placeholder="Choose a username"
+                        className="w-full pl-11 pr-4 py-3.5 rounded-xl text-white text-sm placeholder-lightblue/50 outline-none transition-all"
+                        style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '0.75rem' }}
+                        onFocus={(e) => e.target.style.borderColor = 'rgba(189,36,223,0.5)'}
+                        onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+                      />
+                    </div>
+                    {errors.username && <p className="text-red-400 text-xs mt-1">{errors.username.message || 'Username required'}</p>}
+                  </div>
+                )}
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border"></div>
-            </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-body-bg px-2 text-gray-500 font-medium tracking-wider">Or continue with</span>
-            </div>
-          </div>
+                <div>
+                  <label className="block text-xs font-bold text-lightblue mb-2 tracking-wide uppercase">Email Address</label>
+                  <div className="relative">
+                    <Icon icon="ion:mail-outline" className="absolute left-4 top-1/2 -translate-y-1/2 text-lightblue" />
+                    <input
+                      type="email"
+                      {...register('email', { required: 'Email is required', pattern: { value: /^\S+@\S+$/i, message: 'Invalid email' } })}
+                      placeholder="you@example.com"
+                      className="w-full pl-11 pr-4 py-3.5 rounded-xl text-white text-sm placeholder-lightblue/50 outline-none transition-all"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                      onFocus={(e) => e.target.style.borderColor = 'rgba(189,36,223,0.5)'}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+                    />
+                  </div>
+                  {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email.message}</p>}
+                </div>
 
-          <button 
-            type="button"
-            className="w-full bg-[#1e2337] hover:bg-[#252b45] text-white font-semibold py-3 rounded-lg border border-border flex items-center justify-center gap-3 transition group"
-          >
-            <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center group-hover:scale-110 transition">
-              <span className="text-white font-black text-[10px]">FP</span>
-            </div>
-            Login with FaucetPay
-          </button>
-        </form>
+                <div>
+                  <label className="block text-xs font-bold text-lightblue mb-2 tracking-wide uppercase">Password</label>
+                  <div className="relative">
+                    <Icon icon="ion:lock-closed-outline" className="absolute left-4 top-1/2 -translate-y-1/2 text-lightblue" />
+                    <input
+                      type={showPass ? 'text' : 'password'}
+                      {...register('password', { required: 'Password is required', minLength: { value: 6, message: 'Min 6 characters' } })}
+                      placeholder={isLogin ? 'Your password' : 'Create a strong password'}
+                      className="w-full pl-11 pr-12 py-3.5 rounded-xl text-white text-sm placeholder-lightblue/50 outline-none transition-all"
+                      style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                      onFocus={(e) => e.target.style.borderColor = 'rgba(189,36,223,0.5)'}
+                      onBlur={(e) => e.target.style.borderColor = 'rgba(255,255,255,0.08)'}
+                    />
+                    <button type="button" onClick={() => setShowPass(!showPass)}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 text-lightblue hover:text-white transition-colors">
+                      <Icon icon={showPass ? 'ion:eye-off-outline' : 'ion:eye-outline'} />
+                    </button>
+                  </div>
+                  {errors.password && <p className="text-red-400 text-xs mt-1">{errors.password.message}</p>}
+                </div>
 
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-400">
-            {isLogin ? "Don't have an account? " : "Already have an account? "}
-            <button 
-              type="button"
-              onClick={() => { reset(); setType(isLogin ? 'REGISTER' : 'LOGIN'); }}
-              className="text-primary hover:text-white transition font-medium"
-            >
-              {isLogin ? 'Sign up' : 'Log in'}
-            </button>
-          </p>
-        </div>
-      </div>
-    </div>
+                {serverError && (
+                  <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs text-center">
+                    {serverError}
+                  </div>
+                )}
+
+                <motion.button
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: 1.02, boxShadow: '0 0 40px rgba(189,36,223,0.5)' }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full py-4 rounded-2xl font-black text-white text-sm mt-2 disabled:opacity-60 transition-all"
+                  style={{ background: 'linear-gradient(135deg, #bd24df, #2d6ade)', boxShadow: '0 0 25px rgba(189,36,223,0.35)' }}
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center gap-2">
+                      <motion.span animate={{ rotate: 360 }} transition={{ duration: 0.8, repeat: Infinity, ease: 'linear' }}
+                        className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full inline-block" />
+                      Processing...
+                    </span>
+                  ) : isLogin ? 'Sign In to Dashboard →' : 'Create Free Account →'}
+                </motion.button>
+
+                {/* Divider */}
+                <div className="relative my-2">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }} />
+                  </div>
+                  <div className="relative flex justify-center">
+                    <span className="px-3 text-xs text-lightblue/60 font-medium" style={{ background: '#0c1b44' }}>or continue with</span>
+                  </div>
+                </div>
+
+                {/* FaucetPay SSO */}
+                <motion.button
+                  type="button"
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full py-3.5 rounded-2xl font-bold text-white text-sm flex items-center justify-center gap-3 transition-all"
+                  style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
+                  onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(45,106,222,0.5)'}
+                  onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.08)'}
+                >
+                  <div className="w-7 h-7 rounded-lg flex items-center justify-center font-black text-[11px] text-white" style={{ background: 'linear-gradient(135deg, #2d6ade, #1a4aad)' }}>
+                    FP
+                  </div>
+                  Continue with FaucetPay
+                </motion.button>
+              </form>
+
+              {/* Terms */}
+              {!isLogin && (
+                <p className="text-center text-xs text-lightblue/50 mt-5 leading-relaxed">
+                  By creating an account, you agree to our{' '}
+                  <a href="#" className="text-primary hover:text-white transition-colors">Terms of Service</a>
+                  {' '}and{' '}
+                  <a href="#" className="text-primary hover:text-white transition-colors">Privacy Policy</a>.
+                </p>
+              )}
+            </div>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   );
-};
-
-export default AuthModal;
+}
