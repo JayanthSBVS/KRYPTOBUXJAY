@@ -1,38 +1,34 @@
-import { useRef, useMemo } from 'react';
+import { useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { Environment, Float, MeshTransmissionMaterial, Sparkles, Stars, ContactShadows, Text, Icosahedron } from '@react-three/drei';
+import { Environment, Float, Sparkles, Stars, ContactShadows, Icosahedron } from '@react-three/drei';
 import { motion } from 'framer-motion';
 import { useAuthModalStore } from '@/store/useAuthModalStore';
-import { Icon } from '@iconify/react';
+import { useInView } from 'react-intersection-observer';
 import * as THREE from 'three';
 
-// A premium glass/crystal object
+// Optimized glass/crystal object
 function CryptoCrystal({ position, scale, rotation, color }) {
   const mesh = useRef();
   
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
-    mesh.current.rotation.y = Math.sin(t / 2) * 0.5 + rotation[1];
-    mesh.current.rotation.x = Math.cos(t / 2) * 0.5 + rotation[0];
+    mesh.current.rotation.y = Math.sin(t / 2) * 0.3 + rotation[1];
+    mesh.current.rotation.x = Math.cos(t / 2) * 0.3 + rotation[0];
   });
 
   return (
-    <Float speed={2} rotationIntensity={1.5} floatIntensity={2} position={position}>
+    <Float speed={1.5} rotationIntensity={1} floatIntensity={1.5} position={position}>
       <mesh ref={mesh} scale={scale}>
         <Icosahedron args={[1, 0]}>
-          <MeshTransmissionMaterial 
-            backside
-            samples={4}
-            thickness={2}
-            chromaticAberration={0.4}
-            anisotropy={0.3}
-            distortion={0.5}
-            distortionScale={0.5}
-            temporalDistortion={0.1}
-            iridescence={1}
-            iridescenceIOR={1}
-            iridescenceThicknessRange={[0, 1400]}
+          <meshPhysicalMaterial 
             color={color}
+            transmission={0.9}
+            opacity={1}
+            metalness={0.1}
+            roughness={0.1}
+            ior={1.5}
+            thickness={2}
+            specularIntensity={1}
           />
         </Icosahedron>
       </mesh>
@@ -44,8 +40,8 @@ function CryptoCrystal({ position, scale, rotation, color }) {
 function CameraRig() {
   const { camera, pointer } = useThree();
   useFrame(() => {
-    camera.position.x = THREE.MathUtils.lerp(camera.position.x, pointer.x * 2, 0.05);
-    camera.position.y = THREE.MathUtils.lerp(camera.position.y, pointer.y * 2, 0.05);
+    camera.position.x = THREE.MathUtils.lerp(camera.position.x, pointer.x * 1.5, 0.05);
+    camera.position.y = THREE.MathUtils.lerp(camera.position.y, pointer.y * 1.5, 0.05);
     camera.lookAt(0, 0, 0);
   });
   return null;
@@ -59,7 +55,6 @@ function HeroScene() {
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 10]} intensity={1.5} color="#bd24df" />
       <directionalLight position={[-10, -10, -10]} intensity={1.5} color="#2d6ade" />
-      <spotLight position={[0, 5, 10]} intensity={2} angle={0.5} penumbra={1} color="#ffffff" />
 
       {/* Floating Crystals */}
       <CryptoCrystal position={[-3, 1, -2]} scale={1.5} rotation={[0.5, 0.2, 0]} color="#bd24df" />
@@ -67,12 +62,12 @@ function HeroScene() {
       <CryptoCrystal position={[-2, -2, -3]} scale={0.8} rotation={[0, 0.8, 0.4]} color="#F7931A" />
       <CryptoCrystal position={[4, 2, -4]} scale={1} rotation={[0.7, 0, 0.3]} color="#26A17B" />
 
-      {/* Particles & Stars */}
-      <Stars radius={50} depth={50} count={3000} factor={4} saturation={0} fade speed={1} />
-      <Sparkles count={100} scale={10} size={4} speed={0.4} opacity={0.3} color="#bd24df" />
+      {/* Optimized Particles & Stars */}
+      <Stars radius={50} depth={50} count={1000} factor={3} saturation={0} fade speed={0.5} />
+      <Sparkles count={50} scale={10} size={3} speed={0.2} opacity={0.3} color="#bd24df" />
 
       {/* Ground shadows */}
-      <ContactShadows position={[0, -4, 0]} opacity={0.4} scale={20} blur={2} far={4} color="#000000" />
+      <ContactShadows position={[0, -4, 0]} opacity={0.3} scale={20} blur={2.5} far={4} color="#000000" />
 
       {/* Lighting Environment */}
       <Environment preset="city" />
@@ -85,14 +80,21 @@ function HeroScene() {
 
 export default function HeroSection() {
   const { openModal } = useAuthModalStore();
+  const { ref, inView } = useInView({ threshold: 0 });
 
   return (
-    <section className="relative h-screen w-full overflow-hidden bg-[#040D26]">
-      {/* WebGL Canvas Background */}
+    <section ref={ref} className="relative h-screen w-full overflow-hidden bg-[#040D26]">
+      {/* WebGL Canvas Background - Only render when in view */}
       <div className="absolute inset-0 z-0">
-        <Canvas camera={{ position: [0, 0, 8], fov: 45 }} dpr={[1, 2]}>
-          <HeroScene />
-        </Canvas>
+        {inView && (
+          <Canvas 
+            camera={{ position: [0, 0, 8], fov: 45 }} 
+            dpr={[1, 1.5]}
+            gl={{ antialias: false, powerPreference: "high-performance" }}
+          >
+            <HeroScene />
+          </Canvas>
+        )}
       </div>
 
       {/* Content Overlay */}

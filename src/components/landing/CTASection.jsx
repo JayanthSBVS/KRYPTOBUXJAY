@@ -17,28 +17,20 @@ export default function CTASection() {
           <div className="absolute inset-6 rounded-full border border-secondary/10" />
           {/* Center diamond */}
           <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-20 h-20 rounded-3xl glass-card flex items-center justify-center glow-primary" style={{ border: '1px solid rgba(189,36,223,0.3)' }}>
+            <div className="w-20 h-20 rounded-3xl glass-card flex items-center justify-center" style={{ border: '1px solid rgba(189,36,223,0.3)' }}>
               <Icon icon="ion:diamond" className="text-4xl" style={{ color: '#bd24df' }} />
             </div>
           </div>
-          {/* Orbiting coins */}
-          {[
-            { icon: 'ion:logo-bitcoin', color: '#F7931A', duration: 6, radius: '88px' },
-            { icon: 'ion:flash', color: '#9945FF', duration: 9, radius: '88px', delay: 3 },
-            { icon: 'ion:gift', color: '#F7931A', duration: 12, radius: '60px', delay: 1.5 },
-          ].map((o, i) => (
-            <motion.div
-              key={i}
-              animate={{ rotate: 360 }}
-              transition={{ duration: o.duration, repeat: Infinity, ease: 'linear', delay: o.delay || 0 }}
-              className="absolute inset-0"
-            >
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center"
-                style={{ background: `${o.color}20`, marginTop: o.radius === '60px' ? '14px' : '0' }}>
-                <Icon icon={o.icon} style={{ color: o.color, fontSize: '1rem' }} />
-              </div>
-            </motion.div>
-          ))}
+          {/* Static positioned coins */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center bg-[#F7931A] bg-opacity-20">
+            <Icon icon="ion:logo-bitcoin" className="text-[#F7931A] text-lg" />
+          </div>
+          <div className="absolute bottom-4 right-0 w-8 h-8 rounded-xl flex items-center justify-center bg-[#9945FF] bg-opacity-20">
+            <Icon icon="ion:flash" className="text-[#9945FF] text-lg" />
+          </div>
+          <div className="absolute top-1/2 -left-4 -translate-y-1/2 w-8 h-8 rounded-xl flex items-center justify-center bg-[#26A17B] bg-opacity-20">
+            <Icon icon="ion:cash" className="text-[#26A17B] text-lg" />
+          </div>
         </div>
 
         <motion.div

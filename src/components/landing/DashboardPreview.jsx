@@ -82,19 +82,9 @@ export default function DashboardPreview() {
 
             {/* Main card */}
             <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
               className="relative glass-card rounded-3xl p-6 overflow-hidden"
               style={{ border: '1px solid rgba(189,36,223,0.2)' }}
             >
-              {/* Scan line effect */}
-              <motion.div
-                animate={{ top: ['-5%', '105%'] }}
-                transition={{ duration: 3.5, repeat: Infinity, ease: 'linear', repeatDelay: 2 }}
-                className="absolute left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/40 to-transparent pointer-events-none"
-                style={{ position: 'absolute' }}
-              />
-
               {/* Header */}
               <div className="flex items-center justify-between mb-6">
                 <div>
