@@ -62,12 +62,13 @@ export default function AuthModal() {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.95, opacity: 0, y: 16 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="relative w-full max-w-md overflow-hidden"
+            className="relative w-full max-w-md overflow-hidden flex flex-col"
             style={{
               background: 'linear-gradient(145deg, #0c1b44 0%, #040D26 100%)',
               border: '1px solid rgba(189,36,223,0.2)',
               borderRadius: '1.75rem',
               boxShadow: '0 0 80px rgba(189,36,223,0.15), 0 40px 80px rgba(0,0,0,0.6)',
+              maxHeight: 'calc(100vh - 2rem)',
             }}
           >
             {/* Top glow bar */}
@@ -76,7 +77,7 @@ export default function AuthModal() {
             {/* Ambient bg glow */}
             <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-64 h-64 rounded-full pointer-events-none" style={{ background: 'radial-gradient(circle, rgba(189,36,223,0.12) 0%, transparent 65%)' }} />
 
-            <div className="relative p-8">
+            <div className="relative p-6 sm:p-8 overflow-y-auto no-scrollbar" style={{ overscrollBehavior: 'contain' }}>
               {/* Close */}
               <button onClick={closeModal} className="absolute top-5 right-5 w-8 h-8 rounded-xl flex items-center justify-center text-lightblue hover:text-white hover:bg-white/10 transition-all">
                 <Icon icon="ion:close" className="text-lg" />

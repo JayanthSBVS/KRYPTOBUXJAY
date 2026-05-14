@@ -48,14 +48,6 @@ export default function Navbar() {
           {/* Desktop actions */}
           <div className="hidden md:flex items-center gap-3">
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => openModal('LOGIN')}
-              className="px-5 py-2.5 text-sm font-semibold text-lightblue hover:text-white transition-colors rounded-xl border border-transparent hover:border-border hover:bg-white/5"
-            >
-              Sign In
-            </motion.button>
-            <motion.button
               whileHover={{ scale: 1.04, boxShadow: '0 0 30px rgba(189,36,223,0.55)' }}
               whileTap={{ scale: 0.97 }}
               onClick={() => openModal('REGISTER')}
@@ -88,12 +80,6 @@ export default function Navbar() {
             style={{ background: 'rgba(4, 13, 38, 0.98)', backdropFilter: 'blur(24px)', borderBottom: '1px solid rgba(9,25,69,0.8)' }}
           >
             <div className="px-4 py-6 flex flex-col gap-3">
-              <button
-                onClick={() => { openModal('LOGIN'); setMobile(false); }}
-                className="w-full py-4 rounded-2xl font-bold border border-border text-lightblue hover:text-white hover:bg-white/5 transition"
-              >
-                Sign In
-              </button>
               <button
                 onClick={() => { openModal('REGISTER'); setMobile(false); }}
                 className="w-full py-4 rounded-2xl font-bold text-white"
