@@ -201,6 +201,40 @@ export default function AuthModal() {
                 </motion.button>
               </form>
 
+              {/* FaucetPay Helper Section for New Users */}
+              {!isLogin && (
+                <div className="mt-8">
+                  {/* Divider */}
+                  <div className="relative my-4">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full" style={{ borderTop: '1px solid rgba(255,255,255,0.07)' }} />
+                    </div>
+                    <div className="relative flex justify-center">
+                      <span className="px-3 text-[10px] uppercase font-bold tracking-widest text-lightblue/60" style={{ background: '#0c1b44' }}>
+                        Missing FaucetPay?
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Helper Content */}
+                  <div className="text-center p-4 rounded-2xl" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.04)' }}>
+                    <p className="text-xs text-lightblue mb-3 leading-relaxed">
+                      You need a FaucetPay account to receive instant crypto rewards. Create one for free, then return here to register.
+                    </p>
+                    <a
+                      href="https://faucetpay.io/?r=signup"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center justify-center gap-2 w-full py-3 rounded-xl text-xs font-bold text-white transition-all hover:bg-white/10"
+                      style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+                    >
+                      Create FaucetPay Account
+                      <Icon icon="ion:open-outline" className="text-[10px] text-lightblue" />
+                    </a>
+                  </div>
+                </div>
+              )}
+
               {/* Terms */}
               {!isLogin && (
                 <p className="text-center text-xs text-lightblue/50 mt-5 leading-relaxed">

@@ -21,7 +21,7 @@ const PublicRoute = ({ children }) => {
 
 function App() {
   return (
-    <ReactLenis root options={{ lerp: 0.15, smoothWheel: true, wheelMultiplier: 1.2, duration: 1.2, orientation: 'vertical', gestureOrientation: 'vertical' }}>
+    <ReactLenis root options={{ smoothWheel: false, smoothTouch: true, lerp: 0.1 }}>
       <AuthProvider>
         <ToasterContext />
         <BrowserRouter>
