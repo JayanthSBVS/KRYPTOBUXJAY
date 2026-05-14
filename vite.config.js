@@ -9,4 +9,17 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'react-router-dom', 'zustand'],
+          'ui-libs': ['framer-motion', '@headlessui/react', 'aos', 'react-hot-toast'],
+        },
+      },
+    },
+    chunkSizeWarningLimit: 1000,
+  },
 });

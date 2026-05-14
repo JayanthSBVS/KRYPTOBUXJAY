@@ -3,5 +3,8 @@
   "devCommand": "npm run dev",
   "installCommand": "npm install",
   "env": {},
-  "regions": ["iad1"]
+  "regions": ["iad1"],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
 }
