@@ -84,17 +84,16 @@ export default function HeroSection() {
 
   return (
     <section ref={ref} className="relative h-screen w-full overflow-hidden bg-[#040D26]">
-      {/* WebGL Canvas Background - Only render when in view */}
+      {/* WebGL Canvas Background - Pause frameloop when offscreen to save GPU but avoid remount latency */}
       <div className="absolute inset-0 z-0">
-        {inView && (
-          <Canvas 
-            camera={{ position: [0, 0, 8], fov: 45 }} 
-            dpr={[1, 1.5]}
-            gl={{ antialias: false, powerPreference: "high-performance" }}
-          >
-            <HeroScene />
-          </Canvas>
-        )}
+        <Canvas 
+          frameloop={inView ? 'always' : 'never'}
+          camera={{ position: [0, 0, 8], fov: 45 }} 
+          dpr={[1, 1.5]}
+          gl={{ antialias: false, powerPreference: "high-performance" }}
+        >
+          <HeroScene />
+        </Canvas>
       </div>
 
       {/* Content Overlay */}
